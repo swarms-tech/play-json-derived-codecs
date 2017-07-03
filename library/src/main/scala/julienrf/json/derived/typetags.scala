@@ -82,7 +82,31 @@ object TypeTagOWrites {
         OWrites[A](a => tagOwrites.writes(typeName) ++ owrites.writes(a))
     }
 
-
+  /**
+    * Encodes an tagged type, discards the type name
+    *
+    * For instance, consider the following type definition:
+    *
+    * {{{
+    *   sealed trait Foo
+    *   case class Bar(s: String, i: Int) extends Foo
+    *   case object Baz extends Foo
+    * }}}
+    *
+    * The JSON representation of `Bar("quux", 42)` is the following JSON object:
+    *
+    * {{{
+    *   {
+    *     "s": "quux",
+    *     "i": 42
+    *   }
+    * }}}
+    */
+  def flat: TypeTagOWrites =
+    new TypeTagOWrites {
+      def owrites[A](typeName: String, owrites: OWrites[A]): OWrites[A] =
+        OWrites[A](a => owrites.writes(a))
+    }
 }
 
 /**
