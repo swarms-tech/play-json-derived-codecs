@@ -20,6 +20,9 @@ package object derived {
     def owrites[A](typeName: OWrites[String])(implicit derivedOWrites: Lazy[DerivedOWrites[A]]): OWrites[A] =
       derivedOWrites.value.owrites(TypeTagOWrites.flat(typeName))
 
+    def owritesWithoutType[A](adapter: NameAdapter = NameAdapter.identity)(implicit derivedOWrites: Lazy[DerivedOWrites[A]]): OWrites[A] =
+      derivedOWrites.value.owrites(TypeTagOWrites.flat, adapter)
+
     def oformat[A](typeName: OFormat[String])(implicit derivedReads: Lazy[DerivedReads[A]], derivedOWrites: Lazy[DerivedOWrites[A]]): OFormat[A] =
       OFormat(derivedReads.value.reads(TypeTagReads.flat(typeName)), derivedOWrites.value.owrites(TypeTagOWrites.flat(typeName)))
 
